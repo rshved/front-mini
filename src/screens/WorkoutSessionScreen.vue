@@ -1,11 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import ExerciseCard from '../components/ExerciseCard.vue'
-
-const emit = defineEmits<{
-  (e: 'finish'): void
-}>()
-
 interface Set {
   id: number
   weight: number
@@ -18,6 +11,9 @@ interface Exercise {
   name: string
   sets: Set[]
 }
+
+const globalStore = useGlobalStore()
+const workoutSessionStore = useWorkoutSessionStore()
 
 const exercises = ref<Exercise[]>([
   {
@@ -73,15 +69,19 @@ function addExercise() {
     sets: [{ id: 1, weight: 0, reps: 10, done: false }],
   })
 }
+
+async function finish() {
+  await workoutSessionStore.finishSession()
+  globalStore.currentScreen = 'home'
+}
 </script>
 
 <template>
   <div class="flex flex-col min-h-screen bg-zinc-950">
-    <!-- Header -->
     <div class="px-4 pt-6 pb-2 flex items-center gap-3">
       <button
-        @click="emit('finish')"
         class="text-zinc-400 text-sm py-1 pr-2 hover:text-zinc-200 transition-colors"
+        @click="finish"
       >
         ← Back
       </button>
@@ -99,18 +99,17 @@ function addExercise() {
       />
 
       <button
-        @click="addExercise"
         class="w-full py-4 rounded-2xl border border-dashed border-zinc-700 text-zinc-400 hover:border-zinc-500 hover:text-zinc-200 transition-colors"
+        @click="addExercise"
       >
         + Add Exercise
       </button>
     </div>
 
-    <!-- Finish button pinned to bottom -->
     <div class="fixed bottom-0 left-0 right-0 px-4 pb-6 pt-3 bg-zinc-950">
       <button
-        @click="emit('finish')"
         class="w-full bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white font-bold py-4 rounded-2xl text-base transition-colors"
+        @click="finish"
       >
         Finish Workout
       </button>
