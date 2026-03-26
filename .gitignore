@@ -25,3 +25,7 @@ dist-ssr
 .env
 node_modules
 dist
+
+# Auto-generated types
+src/auto-imports.d.ts
+src/components.d.ts
