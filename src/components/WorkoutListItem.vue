@@ -21,7 +21,7 @@ const workoutSessionStore = useWorkoutSessionStore()
       </div>
       <div class="flex items-center">
         <button class="cursor-pointer" @click.stop="workoutSessionStore.deleteSession(workout.id)">
-          <IconHeroiconsTrash class="w-5 h-5 text-white" />
+          <IconHeroiconsTrash class="w-5 h-5 text-red-500" />
         </button>
       </div>
     </div>

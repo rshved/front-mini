@@ -39,7 +39,7 @@ const stats = [
             v-for="ws in workoutSessionStore.sessions"
             :key="ws.id"
             :workout="ws"
-            @click="workoutSessionStore.currentSession = ws"
+            @click="workoutSessionStore.getCurrentSession(ws.id)"
           />
         </div>
       </div>

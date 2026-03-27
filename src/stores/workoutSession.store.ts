@@ -4,7 +4,6 @@ export const useWorkoutSessionStore = defineStore('workoutSession', {
   state: () => ({
     sessions: [] as WorkoutSession[],
     currentSession: null as WorkoutSession | null,
-    loading: false,
   }),
 
   getters: {
@@ -22,57 +21,95 @@ export const useWorkoutSessionStore = defineStore('workoutSession', {
 
   actions: {
     async getSessions() {
-      this.loading = true
       try {
         const data = await api.get<WorkoutSession[]>('/workout-sessions')
         this.sessions = data
       } catch (e) {
         console.error('getSessions error:', e)
         throw e
-      } finally {
-        this.loading = false
+      }
+    },
+
+    async getCurrentSession(id: number) {
+      try {
+        const data = await api.get<WorkoutSession>(`/workout-sessions/${id}`)
+        this.currentSession = data
+      } catch (e) {
+        console.error('getCurrentSession error:', e)
+        throw e
       }
     },
 
     async startSession(name?: string) {
-      this.loading = true
       try {
         const data = await api.post<WorkoutSession>('/workout-sessions', { name })
         this.currentSession = data
       } catch (e) {
         console.error('startSession error:', e)
         throw e
-      } finally {
-        this.loading = false
       }
     },
 
     async finishSession() {
       if (!this.currentSession) return
 
-      this.loading = true
       try {
-        await api.patch<WorkoutSession>(`/workout-sessions/${this.currentSession.id}/finish`)
+        await api.patch(`/workout-sessions/${this.currentSession.id}/finish`)
         this.currentSession = null
-        this.getSessions()
+        await this.getSessions()
       } catch (e) {
         console.error('finishSession error:', e)
         throw e
-      } finally {
-        this.loading = false
       }
     },
 
     async deleteSession(id: number) {
-      this.loading = true
       try {
         await api.delete(`/workout-sessions/${id}`)
-        this.getSessions()
+        await this.getSessions()
       } catch (e) {
         console.error('deleteSession error:', e)
         throw e
-      } finally {
-        this.loading = false
+      }
+    },
+
+    async addWorkoutItem(name: string, repeats: number) {
+      if (!this.currentSession) return
+
+      try {
+        await api.post<WorkoutItem>('/workout-items', {
+          name,
+          repeats,
+          workoutSessionId: this.currentSession.id,
+        })
+        await this.getCurrentSession(this.currentSession.id)
+      } catch (e) {
+        console.error('addWorkoutItem error:', e)
+        throw e
+      }
+    },
+
+    async updateWorkoutItem(id: number, data: { name?: string; repeats?: number }) {
+      if (!this.currentSession) return
+
+      try {
+        await api.patch<WorkoutItem>(`/workout-items/${id}`, data)
+        await this.getCurrentSession(this.currentSession.id)
+      } catch (e) {
+        console.error('updateWorkoutItem error:', e)
+        throw e
+      }
+    },
+
+    async deleteWorkoutItem(id: number) {
+      if (!this.currentSession) return
+
+      try {
+        await api.delete(`/workout-items/${id}`)
+        await this.getCurrentSession(this.currentSession.id)
+      } catch (e) {
+        console.error('deleteWorkoutItem error:', e)
+        throw e
       }
     },
   },
