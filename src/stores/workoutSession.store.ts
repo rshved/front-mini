@@ -1,6 +1,4 @@
-import { defineStore } from 'pinia'
 import { api } from '../services/api'
-import type { WorkoutSession } from '../types'
 
 export const useWorkoutSessionStore = defineStore('workoutSession', {
   state: () => ({
@@ -10,8 +8,10 @@ export const useWorkoutSessionStore = defineStore('workoutSession', {
   }),
 
   getters: {
-    getDuration: () => (start: string, end: string): string => {
-        const diff = Math.max(0,new Date(end).getTime() - new Date(start).getTime())
+    getDuration:
+      () =>
+      (start: string, end: string): string => {
+        const diff = Math.max(0, new Date(end).getTime() - new Date(start).getTime())
 
         const minutes = Math.floor(diff / 60000)
         const seconds = Math.floor((diff % 60000) / 1000)
@@ -37,9 +37,7 @@ export const useWorkoutSessionStore = defineStore('workoutSession', {
     async startSession(name?: string) {
       this.loading = true
       try {
-        const data = await api.post<WorkoutSession>('/workout-sessions', {
-          name,
-        })
+        const data = await api.post<WorkoutSession>('/workout-sessions', { name })
         this.currentSession = data
       } catch (e) {
         console.error('startSession error:', e)
@@ -54,10 +52,9 @@ export const useWorkoutSessionStore = defineStore('workoutSession', {
 
       this.loading = true
       try {
-        await api.patch<WorkoutSession>(
-          `/workout-sessions/${this.currentSession.id}/finish`,
-        )
+        await api.patch<WorkoutSession>(`/workout-sessions/${this.currentSession.id}/finish`)
         this.currentSession = null
+        this.getSessions()
       } catch (e) {
         console.error('finishSession error:', e)
         throw e
@@ -70,7 +67,7 @@ export const useWorkoutSessionStore = defineStore('workoutSession', {
       this.loading = true
       try {
         await api.delete(`/workout-sessions/${id}`)
-        this.sessions = this.sessions.filter((s) => s.id !== id)
+        this.getSessions()
       } catch (e) {
         console.error('deleteSession error:', e)
         throw e

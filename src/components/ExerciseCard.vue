@@ -26,17 +26,15 @@ const emit = defineEmits<{
       <SetRow
         v-for="set in sets"
         :key="set.id"
-        :setNumber="set.id"
+        :set-number="set.id"
         :weight="set.weight"
         :reps="set.reps"
         :done="set.done"
-        @toggle="emit('toggle-set', set.id)"
-      />
+        @toggle="emit('toggle-set', set.id)" />
     </div>
     <button
-      @click="emit('add-set')"
       class="mt-3 w-full py-2 rounded-xl border border-zinc-700 text-zinc-400 text-sm hover:border-zinc-500 hover:text-zinc-200 transition-colors"
-    >
+      @click="emit('add-set')">
       + Add Set
     </button>
   </div>

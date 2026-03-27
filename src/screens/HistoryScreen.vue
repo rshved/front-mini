@@ -1,6 +1,5 @@
 <script setup lang="ts">
 const workoutSessionStore = useWorkoutSessionStore()
-const selectedWorkout = ref<WorkoutSession | null>(null)
 
 const stats = [
   { label: 'Total workouts', value: 42 },
@@ -9,11 +8,7 @@ const stats = [
 </script>
 
 <template>
-  <WorkoutDetail
-    v-if="selectedWorkout"
-    :workout="selectedWorkout"
-    @back="selectedWorkout = null"
-  />
+  <WorkoutSessionDetails v-if="workoutSessionStore.currentSession" />
 
   <template v-else>
     <div class="px-4 pt-8 pb-2">
@@ -32,7 +27,7 @@ const stats = [
             v-for="ws in workoutSessionStore.sessions"
             :key="ws.id"
             :workout="ws"
-            @click="selectedWorkout = ws"
+            @click="workoutSessionStore.currentSession = ws"
           />
         </div>
       </div>

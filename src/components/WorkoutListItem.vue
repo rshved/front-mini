@@ -20,7 +20,7 @@ const workoutSessionStore = useWorkoutSessionStore()
         <span v-if="workout.volume" class="text-zinc-300 text-sm font-medium ml-3 shrink-0">{{ workout.volume }}</span>
       </div>
       <div class="flex items-center">
-        <button @click.stop="workoutSessionStore.deleteSession(workout.id)">
+        <button class="cursor-pointer" @click.stop="workoutSessionStore.deleteSession(workout.id)">
           <IconHeroiconsTrash class="w-5 h-5 text-white" />
         </button>
       </div>
