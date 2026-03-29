@@ -4,6 +4,8 @@ export const useWorkoutSessionStore = defineStore('workoutSession', {
   state: () => ({
     sessions: [] as WorkoutSession[],
     currentSession: null as WorkoutSession | null,
+    page: 1,
+    totalPages: 1,
   }),
 
   getters: {
@@ -20,10 +22,12 @@ export const useWorkoutSessionStore = defineStore('workoutSession', {
   },
 
   actions: {
-    async getSessions() {
+    async getSessions(page = 1, limit = 10) {
       try {
-        const data = await api.get<WorkoutSession[]>('/workout-sessions')
-        this.sessions = data
+        const data = await api.get<{ items: WorkoutSession[]; page: number; totalPages: number }>(`/workout-sessions?page=${page}&limit=${limit}`)
+        this.sessions = data.items
+        this.page = data.page
+        this.totalPages = data.totalPages
       } catch (e) {
         console.error('getSessions error:', e)
         throw e
@@ -56,7 +60,7 @@ export const useWorkoutSessionStore = defineStore('workoutSession', {
       try {
         await api.patch(`/workout-sessions/${this.currentSession.id}/finish`)
         this.currentSession = null
-        await this.getSessions()
+        await this.getSessions(this.page)
       } catch (e) {
         console.error('finishSession error:', e)
         throw e
@@ -66,7 +70,7 @@ export const useWorkoutSessionStore = defineStore('workoutSession', {
     async deleteSession(id: number) {
       try {
         await api.delete(`/workout-sessions/${id}`)
-        await this.getSessions()
+        await this.getSessions(this.page)
       } catch (e) {
         console.error('deleteSession error:', e)
         throw e

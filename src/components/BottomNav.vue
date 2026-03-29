@@ -9,7 +9,7 @@ const globalStore = useGlobalStore()
       :class="globalStore.currentScreen === 'home' ? 'text-blue-400' : 'text-zinc-500'"
       @click="globalStore.currentScreen = 'home'"
     >
-      <span class="text-xl leading-none">🏠</span>
+      <span class="text-xl leading-none"><IconHeroiconsHome /></span>
       <span>Home</span>
     </button>
     <button
@@ -17,7 +17,7 @@ const globalStore = useGlobalStore()
       :class="globalStore.currentScreen === 'history' ? 'text-blue-400' : 'text-zinc-500'"
       @click="globalStore.currentScreen = 'history'"
     >
-      <span class="text-xl leading-none">📋</span>
+      <span class="text-xl leading-none"><IconHeroiconsClipboardDocumentList /></span>
       <span>History</span>
     </button>
   </nav>

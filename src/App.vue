@@ -3,7 +3,7 @@ const globalStore = useGlobalStore()
 </script>
 
 <template>
-  <div class="min-h-screen bg-zinc-950 text-white max-w-md mx-auto">
+  <div class="min-h-screen bg-zinc-950 text-white max-w-lg mx-auto">
     <HomeScreen
       v-if="globalStore.currentScreen === 'home'"
     />

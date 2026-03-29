@@ -1,6 +1,8 @@
 <script setup lang="ts">
 const workoutSessionStore = useWorkoutSessionStore()
 
+workoutSessionStore.getSessions(1, 10)
+
 const stats = [
   { label: 'Total workouts', value: 42 },
   { label: 'Best streak', value: '12d' },
@@ -27,9 +29,12 @@ const stats = [
             v-for="ws in workoutSessionStore.sessions"
             :key="ws.id"
             :workout="ws"
-            @click="workoutSessionStore.getCurrentSession(ws.id)"
-          />
+            @click="workoutSessionStore.getCurrentSession(ws.id)" />
         </div>
+        <PaginationControls
+          :page="workoutSessionStore.page"
+          :total-pages="workoutSessionStore.totalPages"
+          @change="workoutSessionStore.getSessions($event, 10)" />
       </div>
     </div>
   </template>

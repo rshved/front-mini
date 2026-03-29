@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const workoutSessionStore = useWorkoutSessionStore()
 
-workoutSessionStore.getSessions()
+workoutSessionStore.getSessions(1, 8)
 
 const stats = [
   { label: 'Total', value: 42 },
