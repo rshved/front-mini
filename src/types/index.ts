@@ -4,6 +4,7 @@ export interface WorkoutItem {
   name: string
   repeats: number
   workoutSessionId: number
+  weight: number | null
 }
 
 export interface WorkoutSession {

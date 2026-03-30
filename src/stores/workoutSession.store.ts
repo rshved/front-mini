@@ -77,7 +77,7 @@ export const useWorkoutSessionStore = defineStore('workoutSession', {
       }
     },
 
-    async addWorkoutItem(name: string, repeats: number) {
+    async addWorkoutItem(name: string, repeats: number, weight: number | null) {
       if (!this.currentSession) return
 
       try {
@@ -85,6 +85,7 @@ export const useWorkoutSessionStore = defineStore('workoutSession', {
           name,
           repeats,
           workoutSessionId: this.currentSession.id,
+          weight
         })
         await this.getCurrentSession(this.currentSession.id)
       } catch (e) {
@@ -93,7 +94,7 @@ export const useWorkoutSessionStore = defineStore('workoutSession', {
       }
     },
 
-    async updateWorkoutItem(id: number, data: { name?: string; repeats?: number }) {
+    async updateWorkoutItem(id: number, data: { name?: string; repeats?: number; weight?: number | null }) {
       if (!this.currentSession) return
 
       try {

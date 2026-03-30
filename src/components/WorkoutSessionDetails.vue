@@ -22,8 +22,11 @@ const workoutSessionStore = useWorkoutSessionStore()
       </p>
 
       <div v-for="exercise in workoutSessionStore.currentSession?.items" :key="exercise.name" class="bg-zinc-800 rounded-2xl p-4 flex justify-between items-center gap-2">
-        <h4 class="text-white font-bold mb-2">{{ exercise.name }}</h4>
-        <div>{{ exercise.repeats }}</div>
+        <h4 class="text-white font-bold">{{ exercise.name }}</h4>
+        <div class="text-zinc-400 text-sm">
+          <span v-if="exercise.weight" class="text-zinc-200 font-medium">{{ exercise.weight }}kg</span>
+          <span> x {{ exercise.repeats }}</span>
+        </div>
       </div>
     </div>
 

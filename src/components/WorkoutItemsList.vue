@@ -2,22 +2,22 @@
 const workoutSessionStore = useWorkoutSessionStore()
 
 const showAddForm = ref(false)
-const addForm = ref({ name: '', repeats: 10 })
+const addForm = ref({ name: '', repeats: 10, weight: null })
 const editingId = ref<number | null>(null)
-const editForm = ref({ name: '', repeats: 10 })
+const editForm = ref({ name: '', repeats: 10, weight: null as number | null })
 
 const items = computed(() => workoutSessionStore.currentSession?.items ?? [])
 
 async function addItem() {
   if (!addForm.value.name.trim()) return
-  await workoutSessionStore.addWorkoutItem(addForm.value.name.trim(), addForm.value.repeats)
-  addForm.value = { name: '', repeats: 10 }
+  await workoutSessionStore.addWorkoutItem(addForm.value.name.trim(), addForm.value.repeats, addForm.value.weight)
+  addForm.value = { name: '', repeats: 10, weight: null }
   showAddForm.value = false
 }
 
 function startEdit(item: WorkoutItem) {
   editingId.value = item.id
-  editForm.value = { name: item.name, repeats: item.repeats }
+  editForm.value = { name: item.name, repeats: item.repeats, weight: item.weight }
 }
 
 async function saveEdit() {
@@ -25,6 +25,7 @@ async function saveEdit() {
   await workoutSessionStore.updateWorkoutItem(editingId.value, {
     name: editForm.value.name.trim(),
     repeats: editForm.value.repeats,
+    weight: editForm.value.weight,
   })
   editingId.value = null
 }
@@ -38,35 +39,19 @@ async function deleteItem(id: number) {
   <div class="space-y-3">
     <div v-for="item in items" :key="item.id" class="bg-zinc-800 rounded-2xl p-4">
       <template v-if="editingId === item.id">
-        <div class="flex gap-2 mb-2">
-          <input
-            v-model="editForm.name"
-            class="flex-1 bg-zinc-700 text-white rounded-xl px-3 py-2 text-sm outline-none"
-            placeholder="Exercise name" />
-          <input
-            v-model.number="editForm.repeats"
-            type="number"
-            min="1"
-            class="w-20 bg-zinc-700 text-white rounded-xl px-3 py-2 text-sm outline-none text-center" />
-        </div>
-        <div class="flex gap-2">
-          <button
-            class="flex-1 py-2 rounded-xl bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium transition-colors"
-            @click="saveEdit">
-            Save
-          </button>
-          <button
-            class="py-2 px-4 rounded-xl border border-zinc-700 text-zinc-400 text-sm hover:text-zinc-200 transition-colors"
-            @click="editingId = null">
-            Cancel
-          </button>
-        </div>
+        <WorkoutItemForm
+          v-model:name="editForm.name"
+          v-model:weight="editForm.weight"
+          v-model:repeats="editForm.repeats"
+          submit-label="Save"
+          @submit="saveEdit"
+          @cancel="editingId = null" />
       </template>
       <template v-else>
         <div class="flex items-center justify-between">
           <div>
             <p class="text-white font-semibold text-base">{{ item.name }}</p>
-            <p class="text-zinc-400 text-sm mt-0.5">{{ item.repeats }} reps</p>
+            <p class="text-zinc-400 text-sm mt-0.5">{{ item.weight ? `${item.weight}kg x ${item.repeats}` : `x ${item.repeats}` }}</p>
           </div>
           <div class="flex gap-2">
             <button class="text-zinc-400 hover:text-zinc-200 text-sm px-2 py-1 transition-colors" @click="startEdit(item)">
@@ -80,30 +65,14 @@ async function deleteItem(id: number) {
       </template>
     </div>
 
-    <div v-if="showAddForm" class="bg-zinc-800 rounded-2xl p-4 space-y-2">
-      <div class="flex gap-2">
-        <input
-          v-model="addForm.name"
-          class="flex-1 bg-zinc-700 text-white rounded-xl px-3 py-2 text-sm outline-none"
-          placeholder="Exercise name" />
-        <input
-          v-model.number="addForm.repeats"
-          type="number"
-          min="1"
-          class="w-20 bg-zinc-700 text-white rounded-xl px-3 py-2 text-sm outline-none text-center" />
-      </div>
-      <div class="flex gap-2">
-        <button
-          class="flex-1 py-2 rounded-xl bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium transition-colors"
-          @click="addItem">
-          Add
-        </button>
-        <button
-          class="py-2 px-4 rounded-xl border border-zinc-700 text-zinc-400 text-sm hover:text-zinc-200 transition-colors"
-          @click="showAddForm = false">
-          Cancel
-        </button>
-      </div>
+    <div v-if="showAddForm" class="bg-zinc-800 rounded-2xl p-4">
+      <WorkoutItemForm
+        v-model:name="addForm.name"
+        v-model:weight="addForm.weight"
+        v-model:repeats="addForm.repeats"
+        submit-label="Add"
+        @submit="addItem"
+        @cancel="showAddForm = false" />
     </div>
 
     <button
