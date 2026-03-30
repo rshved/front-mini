@@ -5,12 +5,15 @@ const showAddForm = ref(false)
 const addForm = ref({ name: '', repeats: 10, weight: null })
 const editingId = ref<number | null>(null)
 const editForm = ref({ name: '', repeats: 10, weight: null as number | null })
+const lastItemName = ref<string | null>(null)
 
 const items = computed(() => workoutSessionStore.currentSession?.items ?? [])
 
 async function addItem() {
   if (!addForm.value.name.trim()) return
-  await workoutSessionStore.addWorkoutItem(addForm.value.name.trim(), addForm.value.repeats, addForm.value.weight)
+  const name = addForm.value.name.trim()
+  await workoutSessionStore.addWorkoutItem(name, addForm.value.repeats, addForm.value.weight)
+  lastItemName.value = name
   addForm.value = { name: '', repeats: 10, weight: null }
   showAddForm.value = false
 }
@@ -70,7 +73,9 @@ async function deleteItem(id: number) {
         v-model:name="addForm.name"
         v-model:weight="addForm.weight"
         v-model:repeats="addForm.repeats"
+        :repeat-hint="lastItemName"
         submit-label="Add"
+        @repeat-hint="addForm.name = lastItemName!"
         @submit="addItem"
         @cancel="showAddForm = false" />
     </div>

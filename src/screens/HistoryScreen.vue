@@ -25,7 +25,7 @@ const stats = [
       <div>
         <h2 class="text-white font-semibold text-base mb-3">All Workouts</h2>
         <div class="space-y-2">
-          <WorkoutListItem
+          <WorkoutSessionItem
             v-for="ws in workoutSessionStore.sessions"
             :key="ws.id"
             :workout="ws"
