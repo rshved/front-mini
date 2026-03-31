@@ -4,6 +4,11 @@ import WorkoutItemsList from '../components/WorkoutItemsList.vue'
 const globalStore = useGlobalStore()
 const workoutSessionStore = useWorkoutSessionStore()
 
+function goBack() {
+  workoutSessionStore.currentSession = null
+  globalStore.currentScreen = globalStore.previousScreen
+}
+
 async function finish() {
   await workoutSessionStore.finishSession()
   globalStore.currentScreen = 'home'
@@ -13,7 +18,7 @@ async function finish() {
 <template>
   <div class="flex flex-col min-h-screen bg-zinc-950">
     <div class="px-4 pt-6 pb-2 flex items-center gap-3">
-      <button class="text-zinc-400 text-sm py-1 pr-2 hover:text-zinc-200 transition-colors" @click="finish">
+      <button class="text-zinc-400 text-sm py-1 pr-2 hover:text-zinc-200 transition-colors" @click="goBack">
         <span class="flex items-center gap-2"><IconHeroiconsArrowLeft /> Back</span>
       </button>
       <h1 class="text-white text-xl font-bold">Push Day</h1>

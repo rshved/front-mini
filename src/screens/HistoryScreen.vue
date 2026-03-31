@@ -29,7 +29,7 @@ const stats = [
             v-for="ws in workoutSessionStore.sessions"
             :key="ws.id"
             :workout="ws"
-            @click="workoutSessionStore.getCurrentSession(ws.id)" />
+            @click="workoutSessionStore.openSession(ws.id)" />
         </div>
         <PaginationControls
           :page="workoutSessionStore.page"

@@ -1,4 +1,5 @@
 import { api } from '../services/api'
+import { useGlobalStore } from './global.store'
 
 export const useWorkoutSessionStore = defineStore('workoutSession', {
   state: () => ({
@@ -14,10 +15,16 @@ export const useWorkoutSessionStore = defineStore('workoutSession', {
       (start: string, end: string): string => {
         const diff = Math.max(0, new Date(end).getTime() - new Date(start).getTime())
 
-        const minutes = Math.floor(diff / 60000)
+        const hours = Math.floor(diff / 3600000)
+        const minutes = Math.floor((diff % 3600000) / 60000)
         const seconds = Math.floor((diff % 60000) / 1000)
 
-        return `${minutes}m ${String(seconds).padStart(2, '0')}s`
+        const parts = []
+        if (hours > 0) parts.push(`${hours}h`)
+        parts.push(`${minutes}m`)
+        parts.push(`${String(seconds).padStart(2, '0')}s`)
+
+        return parts.join(' ')
       },
   },
 
@@ -41,6 +48,15 @@ export const useWorkoutSessionStore = defineStore('workoutSession', {
       } catch (e) {
         console.error('getCurrentSession error:', e)
         throw e
+      }
+    },
+
+    async openSession(id: number) {
+      const globalStore = useGlobalStore()
+      await this.getCurrentSession(id)
+      if (!this.currentSession?.endedAt) {
+        globalStore.previousScreen = globalStore.currentScreen
+        globalStore.currentScreen = 'session'
       }
     },
 

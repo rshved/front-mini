@@ -9,7 +9,6 @@ const stats = [
   { label: 'Volume', value: '12t' },
   { label: 'This week', value: 3 },
 ]
-
 </script>
 
 <template>
@@ -39,7 +38,7 @@ const stats = [
             v-for="ws in workoutSessionStore.sessions"
             :key="ws.id"
             :workout="ws"
-            @click="workoutSessionStore.getCurrentSession(ws.id)"
+            @click="workoutSessionStore.openSession(ws.id)"
           />
         </div>
       </div>
